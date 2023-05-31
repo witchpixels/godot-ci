@@ -1,4 +1,5 @@
-FROM mono:latest
+ARG IMAGE="mono:latest"
+FROM $IMAGE
 LABEL author="https://github.com/aBARICHELLO/godot-ci/graphs/contributors"
 
 USER root
@@ -7,8 +8,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     git \
     git-lfs \
-    python \
-    python-openssl \
     unzip \
     wget \
     zip \
@@ -17,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # When in doubt see the downloads page
 # https://downloads.tuxfamily.org/godotengine/
-ARG GODOT_VERSION="3.4.2"
+ARG GODOT_VERSION="4.0.2"
 
 # Example values: stable, beta3, rc1, alpha2, etc.
 # Also change the SUBDIR property when NOT using stable
@@ -36,6 +35,7 @@ RUN wget https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}${SUBDIR}/m
 RUN mkdir ~/.cache \
     && mkdir -p ~/.config/godot \
     && mkdir -p ~/.local/share/godot/templates/${GODOT_VERSION}.${RELEASE_NAME}.mono \
+    && ln -s ~/.local/share/godot/templates ~/.local/share/godot/export_templates \
     && unzip Godot_v${GODOT_VERSION}-${RELEASE_NAME}_mono_${ZIP_GODOT_PLATFORM}.zip \
     && mv Godot_v${GODOT_VERSION}-${RELEASE_NAME}_mono_${ZIP_GODOT_PLATFORM}/Godot_v${GODOT_VERSION}-${RELEASE_NAME}_mono_${FILENAME_GODOT_PLATFORM} /usr/local/bin/godot \
     && mv Godot_v${GODOT_VERSION}-${RELEASE_NAME}_mono_${ZIP_GODOT_PLATFORM}/GodotSharp /usr/local/bin/GodotSharp \
